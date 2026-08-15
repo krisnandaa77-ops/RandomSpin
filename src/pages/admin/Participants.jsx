@@ -46,6 +46,11 @@ const Participants = () => {
   const [bibNumberColIdx, setBibNumberColIdx] = useState(-1);
   const [bibNameColIdx, setBibNameColIdx] = useState(-1);
 
+  // Sheet-picker modal state — shown first for workbooks with multiple sheets/tabs,
+  // so the admin can combine peserta from several sheets (e.g. per category) into one import.
+  const [sheetPicker, setSheetPicker] = useState(null); // { fileName, sheets: [{ name, data }] }
+  const [selectedSheetNames, setSelectedSheetNames] = useState(new Set());
+
   const handleAddManual = (e) => {
     e.preventDefault();
     if (!newName.trim()) return;
@@ -61,11 +66,13 @@ const Participants = () => {
     toast.success(`${newParticipant.name} berhasil ditambahkan`);
   };
 
+  const cleanSheetRows = (data) => (data || []).filter(row => Array.isArray(row) && row.some(cell => cell !== '' && cell !== null && cell !== undefined));
+
   // Take the raw sheet (array-of-arrays, first row = header), stash it, and
   // open the mapping modal so the user can pick which raw columns to use —
   // the source file may contain many unrelated columns (alamat, finish time, dst).
   const openColumnMapping = (data, fileName) => {
-    const cleanRows = (data || []).filter(row => Array.isArray(row) && row.some(cell => cell !== '' && cell !== null && cell !== undefined));
+    const cleanRows = cleanSheetRows(data);
     if (cleanRows.length === 0) {
       toast.warning('File tidak berisi data.');
       return;
@@ -85,6 +92,38 @@ const Participants = () => {
     setBibNumberColIdx(guessColumnIndex(headers, BIB_NUMBER_PATTERNS));
     setBibNameColIdx(guessColumnIndex(headers, BIB_NAME_PATTERNS));
     setImportPreview({ headers, rows, fileName });
+  };
+
+  const toggleSheetSelection = (name) => {
+    setSelectedSheetNames(prev => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name); else next.add(name);
+      return next;
+    });
+  };
+
+  const cancelSheetPicker = () => {
+    setSheetPicker(null);
+    setSelectedSheetNames(new Set());
+  };
+
+  // Combine rows from every checked sheet/tab into one dataset — column layout
+  // is assumed consistent across sheets (typical for per-category registration exports),
+  // so the header row is taken from the first selected sheet only.
+  const confirmSheetPicker = () => {
+    const selected = sheetPicker.sheets.filter(s => selectedSheetNames.has(s.name));
+    if (selected.length === 0) {
+      toast.error('Pilih minimal satu sheet.');
+      return;
+    }
+
+    const firstClean = cleanSheetRows(selected[0].data);
+    const headerRow = firstClean[0];
+    const combinedRows = selected.flatMap(s => cleanSheetRows(s.data).slice(1));
+
+    openColumnMapping([headerRow, ...combinedRows], sheetPicker.fileName);
+    setSheetPicker(null);
+    setSelectedSheetNames(new Set());
   };
 
   const processFile = (file) => {
@@ -110,10 +149,19 @@ const Participants = () => {
         try {
           const bstr = evt.target.result;
           const wb = XLSX.read(bstr, { type: 'binary' });
-          const wsname = wb.SheetNames[0];
-          const ws = wb.Sheets[wsname];
-          const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-          openColumnMapping(data, file.name);
+          const sheets = wb.SheetNames
+            .map(name => ({ name, data: XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1 }) }))
+            .filter(s => s.data.some(row => Array.isArray(row) && row.some(cell => cell !== '' && cell !== null && cell !== undefined)));
+
+          if (sheets.length === 0) {
+            toast.warning('File tidak berisi data.');
+          } else if (sheets.length === 1) {
+            openColumnMapping(sheets[0].data, file.name);
+          } else {
+            // Multiple tabs (e.g. per category) — let the admin pick which ones to combine.
+            setSelectedSheetNames(new Set([sheets[0].name]));
+            setSheetPicker({ fileName: file.name, sheets });
+          }
         } catch (err) {
           toast.error('Gagal membaca file Excel: struktur atau format tidak sesuai.');
         } finally {
@@ -403,6 +451,51 @@ const Participants = () => {
           <button className="btn-link" onClick={() => setShowCount(prev => prev + 25)}>
             Tampilkan lebih banyak
           </button>
+        </div>
+      )}
+
+      {/* Sheet picker modal — for workbooks with multiple tabs, let the admin combine several into one import */}
+      {sheetPicker && (
+        <div className="confirm-overlay">
+          <div className="confirm-dialog" style={{ maxWidth: '480px', textAlign: 'left' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+              <h3 className="confirm-title" style={{ marginBottom: 0 }}>Pilih Sheet yang Diimpor</h3>
+              <button className="btn btn-icon" onClick={cancelSheetPicker} style={{ background: 'transparent' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <p className="confirm-message" style={{ marginBottom: '16px' }}>
+              File <strong>{sheetPicker.fileName}</strong> punya {sheetPicker.sheets.length} sheet/tab. Centang satu atau beberapa sheet untuk digabung jadi satu daftar peserta — kolom Nomor BIB & Nama BIB akan dipilih di langkah berikutnya.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px', maxHeight: '320px', overflowY: 'auto' }}>
+              {sheetPicker.sheets.map(s => {
+                const rowCount = Math.max(cleanSheetRows(s.data).length - 1, 0);
+                const checked = selectedSheetNames.has(s.name);
+                return (
+                  <label
+                    key={s.name}
+                    className="presence-toggle"
+                    style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', cursor: 'pointer', background: checked ? 'rgba(99,102,241,0.1)' : 'transparent' }}
+                    onClick={() => toggleSheetSelection(s.name)}
+                  >
+                    <div className={`toggle-switch mini ${checked ? 'active' : ''}`}>
+                      <div className="toggle-knob" />
+                    </div>
+                    <span style={{ flex: 1, fontWeight: 600 }}>{s.name}</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{rowCount} baris</span>
+                  </label>
+                );
+              })}
+            </div>
+
+            <div className="confirm-actions">
+              <button className="btn btn-secondary confirm-btn" onClick={cancelSheetPicker}>Batal</button>
+              <button className="btn btn-primary confirm-btn" onClick={confirmSheetPicker} disabled={selectedSheetNames.size === 0}>
+                <Check size={16} /> Lanjut ({selectedSheetNames.size} sheet dipilih)
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
