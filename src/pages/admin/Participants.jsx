@@ -13,7 +13,7 @@ const BIB_NUMBER_PATTERNS = [
   /nomor\s*bib/, /no\.?\s*bib/, /bib\s*no/, /bib\s*number/, /bib\s*num/, /^bib$/, /race\s*number/, /no\s*(peserta|urut)/
 ];
 const BIB_NAME_PATTERNS = [
-  /nama\s*bib/, /bib\s*name/, /nama\s*peserta/, /nama\s*lengkap/, /^nama$/, /^name$/
+  /nama\s*bib/, /bib\s*name/, /nama\s*peserta/, /nama\s*lengkap/, /^nama$/, /^name$/, /nick\s*name/
 ];
 
 const guessColumnIndex = (headers, patterns) => {
@@ -50,6 +50,11 @@ const Participants = () => {
   // so the admin can combine peserta from several sheets (e.g. per category) into one import.
   const [sheetPicker, setSheetPicker] = useState(null); // { fileName, sheets: [{ name, data }] }
   const [selectedSheetNames, setSelectedSheetNames] = useState(new Set());
+
+  // Multi-sheet mapping modal state — sheets can have different column layouts
+  // (e.g. an extra "Instansi" column shifts everything over), so each sheet needs
+  // its own detected/adjustable BIB number & name column, not one shared mapping.
+  const [multiSheetPreview, setMultiSheetPreview] = useState(null); // { fileName, sheets: [{ name, headers, rows, numIdx, nameIdx, included }] }
 
   const handleAddManual = (e) => {
     e.preventDefault();
@@ -107,9 +112,9 @@ const Participants = () => {
     setSelectedSheetNames(new Set());
   };
 
-  // Combine rows from every checked sheet/tab into one dataset — column layout
-  // is assumed consistent across sheets (typical for per-category registration exports),
-  // so the header row is taken from the first selected sheet only.
+  // Each sheet/tab can lay its columns out differently (an extra "Instansi" column
+  // shifts everything over, for example), so a single shared column index would silently
+  // misread whichever sheets don't match the first one. Detect BIB number/name per sheet instead.
   const confirmSheetPicker = () => {
     const selected = sheetPicker.sheets.filter(s => selectedSheetNames.has(s.name));
     if (selected.length === 0) {
@@ -117,13 +122,70 @@ const Participants = () => {
       return;
     }
 
-    const firstClean = cleanSheetRows(selected[0].data);
-    const headerRow = firstClean[0];
-    const combinedRows = selected.flatMap(s => cleanSheetRows(s.data).slice(1));
+    // A single selected sheet can use the simpler manual column-mapping flow as before.
+    if (selected.length === 1) {
+      openColumnMapping(selected[0].data, sheetPicker.fileName);
+      setSheetPicker(null);
+      setSelectedSheetNames(new Set());
+      return;
+    }
 
-    openColumnMapping([headerRow, ...combinedRows], sheetPicker.fileName);
+    const sheets = selected.map(s => {
+      const clean = cleanSheetRows(s.data);
+      const headers = (clean[0] || []).map((h, i) => {
+        const label = String(h ?? '').trim();
+        return label || `Kolom ${i + 1}`;
+      });
+      const rows = clean.slice(1);
+      return {
+        name: s.name,
+        headers,
+        rows,
+        numIdx: guessColumnIndex(headers, BIB_NUMBER_PATTERNS),
+        nameIdx: guessColumnIndex(headers, BIB_NAME_PATTERNS),
+        included: rows.length > 0,
+      };
+    });
+
+    setMultiSheetPreview({ fileName: sheetPicker.fileName, sheets });
     setSheetPicker(null);
     setSelectedSheetNames(new Set());
+  };
+
+  const cancelMultiSheetPreview = () => setMultiSheetPreview(null);
+
+  const updateMultiSheetField = (sheetName, field, value) => {
+    setMultiSheetPreview(prev => ({
+      ...prev,
+      sheets: prev.sheets.map(s => s.name === sheetName ? { ...s, [field]: value } : s),
+    }));
+  };
+
+  const confirmMultiSheetImport = () => {
+    const activeSheets = multiSheetPreview.sheets.filter(s => s.included);
+    if (activeSheets.some(s => s.nameIdx === -1)) {
+      toast.error('Ada sheet yang belum dipilih kolom Nama BIB-nya. Lengkapi atau nonaktifkan sheet tersebut.');
+      return;
+    }
+
+    const newParticipants = activeSheets.flatMap(s =>
+      s.rows
+        .filter(row => row[s.nameIdx] !== undefined && String(row[s.nameIdx]).trim() !== '')
+        .map((row, index) => ({
+          id: `import-${Date.now()}-${s.name}-${index}`,
+          bibNumber: s.numIdx !== -1 ? stripLabelPrefix(row[s.numIdx]) : '',
+          name: stripLabelPrefix(row[s.nameIdx]),
+          isPresent: true,
+        }))
+    );
+
+    if (newParticipants.length > 0) {
+      setParticipants(prev => [...prev, ...newParticipants]);
+      toast.success(`${newParticipants.length} peserta berhasil diimpor dari ${activeSheets.length} sheet di ${multiSheetPreview.fileName}`, { duration: 5000 });
+    } else {
+      toast.warning('Tidak ada baris dengan Nama BIB yang valid pada sheet yang dipilih.');
+    }
+    setMultiSheetPreview(null);
   };
 
   const processFile = (file) => {
@@ -498,6 +560,89 @@ const Participants = () => {
           </div>
         </div>
       )}
+
+      {/* Multi-sheet column mapping — each sheet gets its own BIB number/name column
+          since layouts can differ between sheets/tabs */}
+      {multiSheetPreview && (() => {
+        const activeSheets = multiSheetPreview.sheets.filter(s => s.included);
+        const totalCount = activeSheets.reduce((sum, s) => sum + s.rows.filter(row => row[s.nameIdx] !== undefined && String(row[s.nameIdx]).trim() !== '').length, 0);
+        const hasMissingMapping = activeSheets.some(s => s.nameIdx === -1);
+        return (
+          <div className="confirm-overlay">
+            <div className="confirm-dialog" style={{ maxWidth: '720px', textAlign: 'left' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                <h3 className="confirm-title" style={{ marginBottom: 0 }}>Pilih Kolom per Sheet</h3>
+                <button className="btn btn-icon" onClick={cancelMultiSheetPreview} style={{ background: 'transparent' }}>
+                  <X size={20} />
+                </button>
+              </div>
+              <p className="confirm-message" style={{ marginBottom: '16px' }}>
+                Layout kolom bisa berbeda tiap sheet, jadi kolom Nomor BIB & Nama BIB dipilih per sheet. Sudah ditebak otomatis dari nama header — cek dan sesuaikan kalau kurang tepat.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px', maxHeight: '420px', overflowY: 'auto' }}>
+                {multiSheetPreview.sheets.map(s => (
+                  <div key={s.name} style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '12px 14px', opacity: s.included ? 1 : 0.5 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: s.included ? '10px' : 0 }}>
+                      <label className="presence-toggle" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => updateMultiSheetField(s.name, 'included', !s.included)}>
+                        <div className={`toggle-switch mini ${s.included ? 'active' : ''}`}>
+                          <div className="toggle-knob" />
+                        </div>
+                      </label>
+                      <span style={{ fontWeight: 700, flex: 1 }}>{s.name}</span>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{s.rows.length} baris</span>
+                    </div>
+                    {s.included && (
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                        <div className="form-group" style={{ marginBottom: 0 }}>
+                          <label className="form-label" style={{ fontSize: '12px' }}>Kolom Nomor BIB (opsional)</label>
+                          <select
+                            className="form-select"
+                            value={s.numIdx}
+                            onChange={e => updateMultiSheetField(s.name, 'numIdx', Number(e.target.value))}
+                          >
+                            <option value={-1}>— Tidak digunakan —</option>
+                            {s.headers.map((h, i) => (
+                              <option key={i} value={i}>{h}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="form-group" style={{ marginBottom: 0 }}>
+                          <label className="form-label" style={{ fontSize: '12px' }}>Kolom Nama BIB</label>
+                          <select
+                            className="form-select"
+                            value={s.nameIdx}
+                            onChange={e => updateMultiSheetField(s.name, 'nameIdx', Number(e.target.value))}
+                            style={s.nameIdx === -1 ? { borderColor: 'var(--danger)' } : undefined}
+                          >
+                            <option value={-1}>— Pilih kolom —</option>
+                            {s.headers.map((h, i) => (
+                              <option key={i} value={i}>{h}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {hasMissingMapping && (
+                <p style={{ color: 'var(--danger)', fontSize: '13px', marginBottom: '12px' }}>
+                  ⚠️ Ada sheet aktif yang belum punya kolom Nama BIB — pilih kolomnya atau nonaktifkan sheet tersebut.
+                </p>
+              )}
+
+              <div className="confirm-actions">
+                <button className="btn btn-secondary confirm-btn" onClick={cancelMultiSheetPreview}>Batal</button>
+                <button className="btn btn-primary confirm-btn" onClick={confirmMultiSheetImport} disabled={hasMissingMapping || totalCount === 0}>
+                  <Check size={16} /> Import {totalCount} Peserta
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Column mapping modal — lets the user pick which raw sheet columns map to BIB number / BIB name */}
       {importPreview && (
