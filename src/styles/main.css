@@ -843,9 +843,9 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   overflow-y: auto;
 }
 .spin-container-portrait-locked .spin-content {
-  padding: 18px 28px !important;
+  padding: 14px 28px !important;
   justify-content: flex-start !important;
-  gap: 6px !important;
+  gap: 4px !important;
   flex: 1 1 auto !important;
   min-height: 0;
 }
@@ -853,11 +853,11 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   margin-bottom: 2px;
 }
 .spin-container-portrait-locked .spin-logo {
-  max-width: min(170px, 26vw) !important;
+  max-width: min(215px, 32vw) !important;
   margin-bottom: 4px !important;
 }
 .spin-container-portrait-locked .spin-title {
-  font-size: clamp(1.4rem, 3vw, 1.8rem) !important;
+  font-size: clamp(1.9rem, 3.9vw, 2.3rem) !important;
   letter-spacing: 2px !important;
   line-height: 1.1 !important;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
@@ -869,11 +869,11 @@ tr:hover td { background:rgba(255,255,255,0.02); }
 
 /* Prize Info Bar - horizontal optimized for tablet, kept compact */
 .spin-container-portrait-locked .prize-info-bar {
-  padding: 8px 14px !important;
+  padding: 6px 12px !important;
   flex-direction: row !important;
   align-items: center !important;
   text-align: left !important;
-  gap: 10px !important;
+  gap: 8px !important;
   background: rgba(30, 41, 59, 0.85) !important;
   backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(255, 255, 255, 0.18) !important;
@@ -881,50 +881,50 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
   width: 100% !important;
   max-width: 100% !important;
-  margin: 2px auto !important;
+  margin: 0 auto !important;
 }
 .spin-container-portrait-locked .prize-info-main {
   flex-direction: row !important;
-  gap: 10px !important;
+  gap: 8px !important;
   align-items: center !important;
   flex: 1;
   min-width: 0;
 }
 .spin-container-portrait-locked .prize-info-image {
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 8px !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 7px !important;
 }
 .spin-container-portrait-locked .prize-info-name {
-  font-size: clamp(0.85rem, 2vw, 1.05rem) !important;
+  font-size: clamp(0.78rem, 1.8vw, 0.95rem) !important;
   justify-content: flex-start !important;
   letter-spacing: 0.5px;
 }
 .spin-container-portrait-locked .prize-info-detail {
-  font-size: 0.7rem !important;
+  font-size: 0.65rem !important;
 }
 .spin-container-portrait-locked .prize-info-status {
-  font-size: 0.75rem !important;
+  font-size: 0.7rem !important;
 }
 .spin-container-portrait-locked .btn-showcase {
-  padding: 5px 12px !important;
-  font-size: 0.68rem !important;
+  padding: 4px 10px !important;
+  font-size: 0.62rem !important;
 }
 
 /* Session Tabs */
 .spin-container-portrait-locked .session-tabs {
-  margin-top: 4px;
-  margin-bottom: 4px;
+  margin-top: 2px;
+  margin-bottom: 2px;
   gap: 6px;
 }
 .spin-container-portrait-locked .session-tab {
-  padding: 4px 12px;
-  font-size: 0.72rem;
+  padding: 3px 10px;
+  font-size: 0.68rem;
 }
 
 /* Prize Navigation Dots */
 .spin-container-portrait-locked .prize-nav-indicator {
-  margin-top: 4px;
+  margin-top: 2px;
   gap: 6px;
 }
 .spin-container-portrait-locked .prize-dot {
