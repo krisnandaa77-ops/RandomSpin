@@ -10,49 +10,52 @@ function getCtx() {
   return audioCtx;
 }
 
-// ===== DIGITAL SPIN TICK (spinning) =====
+// ===== CLICKY SPIN TICK (spinning) — short percussive "tit" clicks =====
 let drumRollTimer = null;
 let drumSpeed = 60;
 
 function playDrumHit() {
   const ctx = getCtx();
   const t = ctx.currentTime;
+  const freq = 1300 + Math.random() * 500;
 
-  // Core digital blip — square wave with a fast downward pitch sweep,
-  // like a slot-machine reel tick / synth arpeggiator step.
-  const baseFreq = 850 + Math.random() * 550;
+  // Sharp percussive click transient — short filtered noise burst,
+  // no buzzy waveform, just a crisp "tit" attack.
+  const bufferSize = Math.floor(ctx.sampleRate * 0.02);
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 4);
+  }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
 
+  const noiseFilter = ctx.createBiquadFilter();
+  noiseFilter.type = 'bandpass';
+  noiseFilter.frequency.value = freq;
+  noiseFilter.Q.value = 3.5;
+
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0.17, t);
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.016);
+
+  noise.connect(noiseFilter);
+  noiseFilter.connect(noiseGain);
+  noiseGain.connect(ctx.destination);
+  noise.start(t);
+
+  // Subtle pitched body underneath (triangle, not square) so it reads as
+  // a soft "tit" rather than a harsh electronic buzz.
   const osc = ctx.createOscillator();
   const oscGain = ctx.createGain();
-  osc.type = 'square';
-  osc.frequency.setValueAtTime(baseFreq, t);
-  osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.55, t + 0.045);
-
-  const lp = ctx.createBiquadFilter();
-  lp.type = 'lowpass';
-  lp.frequency.setValueAtTime(5000, t);
-
-  oscGain.gain.setValueAtTime(0.001, t);
-  oscGain.gain.exponentialRampToValueAtTime(0.07, t + 0.004);
-  oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.055);
-
-  osc.connect(lp);
-  lp.connect(oscGain);
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, t);
+  oscGain.gain.setValueAtTime(0.035, t);
+  oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.022);
+  osc.connect(oscGain);
   oscGain.connect(ctx.destination);
   osc.start(t);
-  osc.stop(t + 0.06);
-
-  // Crisp high-frequency click layer for extra digital "snap"
-  const click = ctx.createOscillator();
-  const clickGain = ctx.createGain();
-  click.type = 'square';
-  click.frequency.setValueAtTime(baseFreq * 3.2, t);
-  clickGain.gain.setValueAtTime(0.025, t);
-  clickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.018);
-  click.connect(clickGain);
-  clickGain.connect(ctx.destination);
-  click.start(t);
-  click.stop(t + 0.02);
+  osc.stop(t + 0.03);
 }
 
 export function startDrumRoll() {
