@@ -843,118 +843,129 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   overflow-y: auto;
 }
 .spin-container-portrait-locked .spin-content {
-  padding: 24px 28px !important;
+  padding: 18px 28px !important;
   justify-content: flex-start !important;
-  gap: 8px !important;
+  gap: 6px !important;
   flex: 1 1 auto !important;
   min-height: 0;
 }
 .spin-container-portrait-locked .spin-header {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .spin-container-portrait-locked .spin-logo {
-  max-width: min(230px, 34vw) !important;
-  margin-bottom: 8px !important;
+  max-width: min(170px, 26vw) !important;
+  margin-bottom: 4px !important;
 }
 .spin-container-portrait-locked .spin-title {
-  font-size: clamp(2.1rem, 4.6vw, 2.7rem) !important;
-  letter-spacing: 3px !important;
-  line-height: 1.15 !important;
+  font-size: clamp(1.4rem, 3vw, 1.8rem) !important;
+  letter-spacing: 2px !important;
+  line-height: 1.1 !important;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 .spin-container-portrait-locked .spin-subtitle {
-  font-size: clamp(1.1rem, 2.5vw, 1.4rem) !important;
-  margin-top: 6px !important;
+  font-size: clamp(0.8rem, 1.7vw, 1rem) !important;
+  margin-top: 2px !important;
 }
 
 /* Prize Info Bar - horizontal optimized for tablet, kept compact */
 .spin-container-portrait-locked .prize-info-bar {
-  padding: 12px 18px !important;
+  padding: 8px 14px !important;
   flex-direction: row !important;
   align-items: center !important;
   text-align: left !important;
-  gap: 12px !important;
+  gap: 10px !important;
   background: rgba(30, 41, 59, 0.85) !important;
   backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  border-radius: 14px !important;
+  border-radius: 12px !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
   width: 100% !important;
   max-width: 100% !important;
-  margin: 4px auto !important;
+  margin: 2px auto !important;
 }
 .spin-container-portrait-locked .prize-info-main {
   flex-direction: row !important;
-  gap: 12px !important;
+  gap: 10px !important;
   align-items: center !important;
   flex: 1;
   min-width: 0;
 }
 .spin-container-portrait-locked .prize-info-image {
-  width: 48px !important;
-  height: 48px !important;
-  border-radius: 10px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
 }
 .spin-container-portrait-locked .prize-info-name {
-  font-size: clamp(1.1rem, 2.8vw, 1.4rem) !important;
+  font-size: clamp(0.85rem, 2vw, 1.05rem) !important;
   justify-content: flex-start !important;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
 }
 .spin-container-portrait-locked .prize-info-detail {
-  font-size: 0.8rem !important;
+  font-size: 0.7rem !important;
 }
 .spin-container-portrait-locked .prize-info-status {
-  font-size: 0.85rem !important;
+  font-size: 0.75rem !important;
 }
 .spin-container-portrait-locked .btn-showcase {
-  padding: 7px 16px !important;
-  font-size: 0.78rem !important;
+  padding: 5px 12px !important;
+  font-size: 0.68rem !important;
 }
 
 /* Session Tabs */
 .spin-container-portrait-locked .session-tabs {
-  margin-top: 6px;
-  margin-bottom: 8px;
-  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  gap: 6px;
 }
 .spin-container-portrait-locked .session-tab {
-  padding: 6px 16px;
-  font-size: 0.8rem;
+  padding: 4px 12px;
+  font-size: 0.72rem;
 }
 
 /* Prize Navigation Dots */
 .spin-container-portrait-locked .prize-nav-indicator {
-  margin-top: 8px;
-  gap: 8px;
+  margin-top: 4px;
+  gap: 6px;
 }
 .spin-container-portrait-locked .prize-dot {
-  width: 34px;
-  height: 34px;
-  font-size: 13px;
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
 }
 
 /* Spin Grid */
 .spin-container-portrait-locked .spin-grid-wrapper {
   flex: 1 1 auto !important;
   padding: 0 60px !important;
-  margin: 6px 0 !important;
+  margin: 4px 0 !important;
   min-height: 0;
   position: relative;
   overflow-y: auto;
-  align-items: flex-start !important;
+  align-items: center !important;
   justify-content: flex-start !important;
 }
 .spin-container-portrait-locked .spin-grid {
-  gap: 14px !important;
+  gap: 10px !important;
   width: 100% !important;
   max-width: 680px !important;
   margin: auto 0;
 }
 .spin-container-portrait-locked .winner-slot {
-  padding: 16px 24px !important;
-  border-radius: 18px !important;
-  min-height: 68px !important;
+  padding: 18px 22px 10px !important;
+  border-radius: 16px !important;
+  min-height: 56px !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+.spin-container-portrait-locked .slot-hint-badge {
+  top: 6px !important;
+  right: 8px !important;
+  font-size: 0.55rem !important;
+  padding: 2px 8px !important;
+}
+.spin-container-portrait-locked .slot-badge {
+  top: 6px !important;
+  font-size: 0.62rem !important;
+  padding: 3px 10px !important;
 }
 
 /* Nav Buttons */
@@ -1053,22 +1064,6 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   letter-spacing: 2px;
   padding: 6px 18px;
   margin-bottom: 20px;
-}
-
-/* Showcase Button */
-.spin-container-portrait-locked .btn-showcase {
-  font-size: 0.82rem;
-  padding: 7px 14px;
-}
-
-/* Slot Badges & Hints */
-.spin-container-portrait-locked .slot-badge {
-  font-size: 0.7rem;
-  padding: 3px 10px;
-}
-.spin-container-portrait-locked .slot-hint-badge {
-  font-size: 0.62rem;
-  padding: 3px 10px;
 }
 
 /* Confetti */

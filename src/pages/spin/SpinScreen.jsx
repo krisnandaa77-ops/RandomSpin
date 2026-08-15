@@ -574,7 +574,7 @@ const SpinScreen = () => {
   const getBibNumberFontSize = () => {
     if (effectiveIsPortrait) {
       if (effectiveIsTabletPortrait) {
-        if (slotCount <= 2) return 'clamp(2.2rem, 6.5vw, 3.8rem)';
+        if (slotCount <= 2) return 'clamp(1.8rem, 5.2vw, 2.8rem)';
         if (slotCount <= 4) return 'clamp(1.8rem, 5.2vw, 2.8rem)';
         if (slotCount <= 6) return 'clamp(1.5rem, 4.4vw, 2.2rem)';
         return 'clamp(1.2rem, 3.8vw, 1.8rem)';
@@ -593,7 +593,7 @@ const SpinScreen = () => {
   const getBibNameFontSize = () => {
     if (effectiveIsPortrait) {
       if (effectiveIsTabletPortrait) {
-        if (slotCount <= 2) return 'clamp(1rem, 2.6vw, 1.5rem)';
+        if (slotCount <= 2) return 'clamp(0.85rem, 2.2vw, 1.2rem)';
         if (slotCount <= 4) return 'clamp(0.85rem, 2.2vw, 1.2rem)';
         if (slotCount <= 6) return 'clamp(0.75rem, 1.9vw, 1.05rem)';
         return 'clamp(0.65rem, 1.6vw, 0.9rem)';
