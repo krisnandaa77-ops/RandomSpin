@@ -1027,8 +1027,11 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   margin-top: 8px;
 }
 
-/* Countdown Corner */
+/* Countdown Corner — anchor to the scaled portrait stage box (.spin-container
+   is position:relative) instead of position:fixed, which anchors to the real
+   browser viewport and lets it drift outside the letterboxed portrait frame. */
 .spin-container-portrait-locked .countdown-corner {
+  position: absolute !important;
   bottom: 24px !important;
   right: 24px !important;
 }
@@ -1066,8 +1069,11 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   margin-bottom: 20px;
 }
 
-/* Confetti */
+/* Confetti — same viewport-vs-stage issue as the countdown corner above:
+   position:absolute keeps particles clipped to the portrait box instead of
+   the full (often much wider) browser window. */
 .spin-container-portrait-locked .confetti-container {
+  position: absolute !important;
   z-index: 100;
 }
 
