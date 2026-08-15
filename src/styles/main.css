@@ -830,246 +830,250 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   }
 }
 
-/* ===== TABLET PORTRAIT 768x1024 OPTIMIZED ===== */
-@media (min-width: 600px) and (max-width: 1024px) and (orientation: portrait) {
-  .spin-container {
-    height: 100vh;
-    min-height: 100vh;
-    overflow-y: auto;
-  }
-  .spin-content {
-    padding: 24px 28px !important;
-    justify-content: flex-start !important;
-    gap: 8px !important;
-    flex: 1 1 auto !important;
-    min-height: 0;
-  }
-  .spin-header {
-    margin-bottom: 4px;
-  }
-  .spin-logo {
-    max-width: min(230px, 34vw) !important;
-    margin-bottom: 8px !important;
-  }
-  .spin-title {
-    font-size: clamp(2.1rem, 4.6vw, 2.7rem) !important;
-    letter-spacing: 3px !important;
-    line-height: 1.15 !important;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  }
-  .spin-subtitle {
-    font-size: clamp(1.1rem, 2.5vw, 1.4rem) !important;
-    margin-top: 6px !important;
-  }
+/* ===== TABLET PORTRAIT 768x1024 OPTIMIZED =====
+   Scoped to the .spin-container-portrait-locked class (the app's simulated
+   videotron portrait stage) rather than a viewport media query. The portrait
+   stage is a fixed-aspect-ratio box that gets scaled to fit inside whatever
+   window/monitor is displaying it (often a wide landscape desktop monitor),
+   so `orientation: portrait` / `max-width: 1024px` media queries checking the
+   real browser window never match and this block would silently never apply. */
+.spin-container-portrait-locked {
+  height: 100vh;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+.spin-container-portrait-locked .spin-content {
+  padding: 24px 28px !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  flex: 1 1 auto !important;
+  min-height: 0;
+}
+.spin-container-portrait-locked .spin-header {
+  margin-bottom: 4px;
+}
+.spin-container-portrait-locked .spin-logo {
+  max-width: min(230px, 34vw) !important;
+  margin-bottom: 8px !important;
+}
+.spin-container-portrait-locked .spin-title {
+  font-size: clamp(2.1rem, 4.6vw, 2.7rem) !important;
+  letter-spacing: 3px !important;
+  line-height: 1.15 !important;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+.spin-container-portrait-locked .spin-subtitle {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem) !important;
+  margin-top: 6px !important;
+}
 
-  /* Prize Info Bar - horizontal optimized for tablet, kept compact */
-  .prize-info-bar {
-    padding: 12px 18px !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    text-align: left !important;
-    gap: 12px !important;
-    background: rgba(30, 41, 59, 0.85) !important;
-    backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    border-radius: 14px !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 4px auto !important;
-  }
-  .prize-info-main {
-    flex-direction: row !important;
-    gap: 12px !important;
-    align-items: center !important;
-    flex: 1;
-    min-width: 0;
-  }
-  .prize-info-image {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 10px !important;
-  }
-  .prize-info-name {
-    font-size: clamp(1.1rem, 2.8vw, 1.4rem) !important;
-    justify-content: flex-start !important;
-    letter-spacing: 0.8px;
-  }
-  .prize-info-detail {
-    font-size: 0.8rem !important;
-  }
-  .prize-info-status {
-    font-size: 0.85rem !important;
-  }
-  .btn-showcase {
-    padding: 7px 16px !important;
-    font-size: 0.78rem !important;
-  }
+/* Prize Info Bar - horizontal optimized for tablet, kept compact */
+.spin-container-portrait-locked .prize-info-bar {
+  padding: 12px 18px !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  text-align: left !important;
+  gap: 12px !important;
+  background: rgba(30, 41, 59, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 4px auto !important;
+}
+.spin-container-portrait-locked .prize-info-main {
+  flex-direction: row !important;
+  gap: 12px !important;
+  align-items: center !important;
+  flex: 1;
+  min-width: 0;
+}
+.spin-container-portrait-locked .prize-info-image {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 10px !important;
+}
+.spin-container-portrait-locked .prize-info-name {
+  font-size: clamp(1.1rem, 2.8vw, 1.4rem) !important;
+  justify-content: flex-start !important;
+  letter-spacing: 0.8px;
+}
+.spin-container-portrait-locked .prize-info-detail {
+  font-size: 0.8rem !important;
+}
+.spin-container-portrait-locked .prize-info-status {
+  font-size: 0.85rem !important;
+}
+.spin-container-portrait-locked .btn-showcase {
+  padding: 7px 16px !important;
+  font-size: 0.78rem !important;
+}
 
-  /* Session Tabs */
-  .session-tabs {
-    margin-top: 6px;
-    margin-bottom: 8px;
-    gap: 8px;
-  }
-  .session-tab {
-    padding: 6px 16px;
-    font-size: 0.8rem;
-  }
+/* Session Tabs */
+.spin-container-portrait-locked .session-tabs {
+  margin-top: 6px;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+.spin-container-portrait-locked .session-tab {
+  padding: 6px 16px;
+  font-size: 0.8rem;
+}
 
-  /* Prize Navigation Dots */
-  .prize-nav-indicator {
-    margin-top: 8px;
-    gap: 8px;
-  }
-  .prize-dot {
-    width: 34px;
-    height: 34px;
-    font-size: 13px;
-  }
+/* Prize Navigation Dots */
+.spin-container-portrait-locked .prize-nav-indicator {
+  margin-top: 8px;
+  gap: 8px;
+}
+.spin-container-portrait-locked .prize-dot {
+  width: 34px;
+  height: 34px;
+  font-size: 13px;
+}
 
-  /* Spin Grid */
-  .spin-grid-wrapper {
-    flex: 1 1 auto !important;
-    padding: 0 60px !important;
-    margin: 6px 0 !important;
-    min-height: 0;
-    position: relative;
-    overflow-y: auto;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-  }
-  .spin-grid {
-    gap: 14px !important;
-    width: 100% !important;
-    max-width: 680px !important;
-    margin: auto 0;
-  }
-  .winner-slot {
-    padding: 16px 24px !important;
-    border-radius: 18px !important;
-    min-height: 68px !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-  }
+/* Spin Grid */
+.spin-container-portrait-locked .spin-grid-wrapper {
+  flex: 1 1 auto !important;
+  padding: 0 60px !important;
+  margin: 6px 0 !important;
+  min-height: 0;
+  position: relative;
+  overflow-y: auto;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+}
+.spin-container-portrait-locked .spin-grid {
+  gap: 14px !important;
+  width: 100% !important;
+  max-width: 680px !important;
+  margin: auto 0;
+}
+.spin-container-portrait-locked .winner-slot {
+  padding: 16px 24px !important;
+  border-radius: 18px !important;
+  min-height: 68px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
 
-  /* Nav Buttons */
-  .btn-nav {
-    position: absolute !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 48px !important;
-    height: 48px !important;
-    z-index: 20 !important;
-    background: rgba(15, 23, 42, 0.88) !important;
-    border: 1px solid rgba(255, 255, 255, 0.35) !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
-  }
-  .btn-nav:hover:not(:disabled) {
-    transform: translateY(-50%) scale(1.08) !important;
-  }
-  .btn-nav-prev {
-    left: 4px !important;
-    margin-right: 0 !important;
-  }
-  .btn-nav-next {
-    right: 4px !important;
-    margin-left: 0 !important;
-  }
+/* Nav Buttons */
+.spin-container-portrait-locked .btn-nav {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 48px !important;
+  height: 48px !important;
+  z-index: 20 !important;
+  background: rgba(15, 23, 42, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+}
+.spin-container-portrait-locked .btn-nav:hover:not(:disabled) {
+  transform: translateY(-50%) scale(1.08) !important;
+}
+.spin-container-portrait-locked .btn-nav-prev {
+  left: 4px !important;
+  margin-right: 0 !important;
+}
+.spin-container-portrait-locked .btn-nav-next {
+  right: 4px !important;
+  margin-left: 0 !important;
+}
 
-  /* Controls */
-  .spin-controls {
-    padding-top: 12px !important;
-    margin-top: auto !important;
-    width: 100% !important;
-  }
-  .btn-spin-action {
-    width: 100% !important;
-    max-width: 480px !important;
-    font-size: clamp(1.3rem, 3.5vw, 1.6rem) !important;
-    padding: 16px 32px !important;
-    border-radius: 999px !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-  }
-  .btn-next-prize,
-  .btn-next-session {
-    font-size: 1.1rem !important;
-    padding: 14px 32px !important;
-  }
-  .btn-respin {
-    font-size: 1.1rem !important;
-    padding: 14px 28px !important;
-  }
-  .btn-respin-cancel {
-    font-size: 0.95rem !important;
-    padding: 12px 24px !important;
-  }
+/* Controls */
+.spin-container-portrait-locked .spin-controls {
+  padding-top: 12px !important;
+  margin-top: auto !important;
+  width: 100% !important;
+}
+.spin-container-portrait-locked .btn-spin-action {
+  width: 100% !important;
+  max-width: 480px !important;
+  font-size: clamp(1.3rem, 3.5vw, 1.6rem) !important;
+  padding: 16px 32px !important;
+  border-radius: 999px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+.spin-container-portrait-locked .btn-next-prize,
+.spin-container-portrait-locked .btn-next-session {
+  font-size: 1.1rem !important;
+  padding: 14px 32px !important;
+}
+.spin-container-portrait-locked .btn-respin {
+  font-size: 1.1rem !important;
+  padding: 14px 28px !important;
+}
+.spin-container-portrait-locked .btn-respin-cancel {
+  font-size: 0.95rem !important;
+  padding: 12px 24px !important;
+}
 
-  /* Spin Warning */
-  .spin-warning {
-    max-width: 100% !important;
-    font-size: 0.88rem;
-    margin-top: 8px;
-  }
+/* Spin Warning */
+.spin-container-portrait-locked .spin-warning {
+  max-width: 100% !important;
+  font-size: 0.88rem;
+  margin-top: 8px;
+}
 
-  /* Countdown Corner */
-  .countdown-corner {
-    bottom: 24px !important;
-    right: 24px !important;
-  }
+/* Countdown Corner */
+.spin-container-portrait-locked .countdown-corner {
+  bottom: 24px !important;
+  right: 24px !important;
+}
 
-  /* Complete Message */
-  .spin-complete-msg {
-    padding: 10px 20px !important;
-    font-size: clamp(0.85rem, 2.2vw, 1rem) !important;
-    gap: 8px !important;
-    max-width: 95% !important;
-    border-radius: 14px !important;
-  }
+/* Complete Message */
+.spin-container-portrait-locked .spin-complete-msg {
+  padding: 10px 20px !important;
+  font-size: clamp(0.85rem, 2.2vw, 1rem) !important;
+  gap: 8px !important;
+  max-width: 95% !important;
+  border-radius: 14px !important;
+}
 
-  /* Intro Popup */
-  .intro-popup-card {
-    max-width: 600px;
-    padding: 36px 28px;
-  }
-  .intro-prize-png-floating {
-    max-width: 260px;
-    max-height: 260px;
-  }
-  .intro-prize-heading {
-    font-size: clamp(2rem, 5vw, 3rem) !important;
-  }
-  .intro-quota-badge {
-    font-size: 1.1rem;
-    padding: 10px 22px;
-    margin-bottom: 28px;
-  }
-  .intro-session-badge {
-    font-size: 0.95rem;
-    letter-spacing: 2px;
-    padding: 6px 18px;
-    margin-bottom: 20px;
-  }
+/* Intro Popup */
+.spin-container-portrait-locked .intro-popup-card {
+  max-width: 600px;
+  padding: 36px 28px;
+}
+.spin-container-portrait-locked .intro-prize-png-floating {
+  max-width: 260px;
+  max-height: 260px;
+}
+.spin-container-portrait-locked .intro-prize-heading {
+  font-size: clamp(2rem, 5vw, 3rem) !important;
+}
+.spin-container-portrait-locked .intro-quota-badge {
+  font-size: 1.1rem;
+  padding: 10px 22px;
+  margin-bottom: 28px;
+}
+.spin-container-portrait-locked .intro-session-badge {
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  padding: 6px 18px;
+  margin-bottom: 20px;
+}
 
-  /* Showcase Button */
-  .btn-showcase {
-    font-size: 0.82rem;
-    padding: 7px 14px;
-  }
+/* Showcase Button */
+.spin-container-portrait-locked .btn-showcase {
+  font-size: 0.82rem;
+  padding: 7px 14px;
+}
 
-  /* Slot Badges & Hints */
-  .slot-badge {
-    font-size: 0.7rem;
-    padding: 3px 10px;
-  }
-  .slot-hint-badge {
-    font-size: 0.62rem;
-    padding: 3px 10px;
-  }
+/* Slot Badges & Hints */
+.spin-container-portrait-locked .slot-badge {
+  font-size: 0.7rem;
+  padding: 3px 10px;
+}
+.spin-container-portrait-locked .slot-hint-badge {
+  font-size: 0.62rem;
+  padding: 3px 10px;
+}
 
-  /* Confetti */
-  .confetti-container {
-    z-index: 100;
-  }
+/* Confetti */
+.spin-container-portrait-locked .confetti-container {
+  z-index: 100;
 }
 
 @media (max-width: 480px) {
