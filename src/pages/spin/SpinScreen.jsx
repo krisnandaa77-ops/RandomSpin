@@ -923,23 +923,40 @@ const SpinScreen = () => {
                     className="spin-progress-runner"
                     style={{ left: `${Math.min(100, Math.max(0, countdownProgress * 100))}%` }}
                   >
-                    <svg className="runner-figure" viewBox="0 0 40 50" width="38" height="48">
+                    <svg className="runner-figure" viewBox="0 0 40 58" width="34" height="49">
+                      {/* Back leg (thigh + shin + shoe) */}
                       <g className="runner-leg-back-g">
-                        <line x1="17" y1="30" x2="17" y2="42" stroke="#111827" strokeWidth="4.2" strokeLinecap="round" />
-                        <ellipse cx="17" cy="44" rx="4" ry="2.2" fill="#f8fafc" />
+                        <rect x="18" y="31" width="4.2" height="11" rx="2.1" fill="#111827" />
+                        <rect x="17.8" y="41" width="3.8" height="9.5" rx="1.9" fill="#1f2937" />
+                        <ellipse cx="19.7" cy="52" rx="4.4" ry="2.3" fill="#f8fafc" />
+                        <rect x="15.6" y="52.4" width="8.6" height="1.3" rx="0.65" fill="#cbd5e1" />
                       </g>
-                      <g className="runner-leg-front-g">
-                        <line x1="17" y1="30" x2="17" y2="42" stroke="#111827" strokeWidth="4.2" strokeLinecap="round" />
-                        <ellipse cx="17" cy="44" rx="4" ry="2.2" fill="#f8fafc" />
-                      </g>
-                      <line className="runner-torso" x1="20" y1="14" x2="17" y2="30" stroke="#dc2626" strokeWidth="7" strokeLinecap="round" />
+                      {/* Back arm (sleeve + forearm + hand) */}
                       <g className="runner-arm-back-g">
-                        <line x1="19" y1="17" x2="19" y2="27" stroke="#b91c1c" strokeWidth="3.2" strokeLinecap="round" />
+                        <rect x="19.6" y="17" width="3.4" height="8.5" rx="1.7" fill="#b91c1c" />
+                        <rect x="19.6" y="24.7" width="3" height="7.5" rx="1.5" fill="#e3ac81" />
+                        <circle cx="21.1" cy="32.6" r="1.7" fill="#e3ac81" />
                       </g>
+                      {/* Torso (red shirt) leaning slightly forward */}
+                      <rect x="16.6" y="14.5" width="11" height="16.5" rx="5" fill="#dc2626" transform="rotate(9 22.1 22.75)" />
+                      {/* Shorts connecting torso to hips */}
+                      <rect x="16.2" y="26.5" width="11.8" height="7" rx="3.5" fill="#111827" transform="rotate(9 22.1 30)" />
+                      {/* Front arm (sleeve + forearm + hand) */}
                       <g className="runner-arm-front-g">
-                        <line x1="19" y1="17" x2="19" y2="27" stroke="#dc2626" strokeWidth="3.2" strokeLinecap="round" />
+                        <rect x="19.6" y="17" width="3.4" height="8.5" rx="1.7" fill="#ef4444" />
+                        <rect x="19.6" y="24.7" width="3" height="7.5" rx="1.5" fill="#f3c9a4" />
+                        <circle cx="21.1" cy="32.6" r="1.7" fill="#f3c9a4" />
                       </g>
-                      <circle className="runner-head" cx="20" cy="9" r="5" fill="#f3c9a4" />
+                      {/* Front leg (thigh + shin + shoe) */}
+                      <g className="runner-leg-front-g">
+                        <rect x="18" y="31" width="4.2" height="11" rx="2.1" fill="#1f2937" />
+                        <rect x="17.8" y="41" width="3.8" height="9.5" rx="1.9" fill="#111827" />
+                        <ellipse cx="19.7" cy="52" rx="4.4" ry="2.3" fill="#ffffff" />
+                        <rect x="15.6" y="52.4" width="8.6" height="1.3" rx="0.65" fill="#e2e8f0" />
+                      </g>
+                      {/* Head */}
+                      <circle className="runner-head" cx="22" cy="8.4" r="5.3" fill="#f3c9a4" />
+                      <path d="M16.9 6.6 Q22 2 27.1 6.6 Q27.1 3.4 22 3 Q16.9 3.4 16.9 6.6 Z" fill="#1f2937" />
                     </svg>
                   </div>
                 </div>
@@ -956,6 +973,9 @@ const SpinScreen = () => {
                     <rect x="9.5" y="8" width="3.75" height="3" fill="#111827" />
                   </g>
                 </svg>
+              </div>
+              <div className="spin-progress-percent">
+                {Math.round(Math.min(100, Math.max(0, countdownProgress * 100)))}%
               </div>
               <div className="spin-progress-bar-track">
                 <div
