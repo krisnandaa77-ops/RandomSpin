@@ -36,7 +36,7 @@ function playDrumHit() {
   noiseFilter.Q.value = 3.5;
 
   const noiseGain = ctx.createGain();
-  noiseGain.gain.setValueAtTime(0.17, t);
+  noiseGain.gain.setValueAtTime(0.34, t);
   noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.016);
 
   noise.connect(noiseFilter);
@@ -50,7 +50,7 @@ function playDrumHit() {
   const oscGain = ctx.createGain();
   osc.type = 'triangle';
   osc.frequency.setValueAtTime(freq, t);
-  oscGain.gain.setValueAtTime(0.035, t);
+  oscGain.gain.setValueAtTime(0.075, t);
   oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.022);
   osc.connect(oscGain);
   oscGain.connect(ctx.destination);
