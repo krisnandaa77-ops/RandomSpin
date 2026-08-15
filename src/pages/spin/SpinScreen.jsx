@@ -911,6 +911,60 @@ const SpinScreen = () => {
 
         {/* Controls */}
         <div className="spin-controls">
+          {showCountdown && (
+            <div className="spin-progress-footer">
+              <div className="spin-progress-track">
+                <svg className="spin-flag spin-flag-start" viewBox="0 0 20 26" width="18" height="24">
+                  <line x1="2" y1="2" x2="2" y2="25" stroke="#cbd5e1" strokeWidth="1.6" />
+                  <path d="M2 2 L17 6 L2 11 Z" fill="#ef4444" />
+                </svg>
+                <div className="spin-progress-line">
+                  <div
+                    className="spin-progress-runner"
+                    style={{ left: `${Math.min(100, Math.max(0, countdownProgress * 100))}%` }}
+                  >
+                    <svg className="runner-figure" viewBox="0 0 40 50" width="38" height="48">
+                      <g className="runner-leg-back-g">
+                        <line x1="17" y1="30" x2="17" y2="42" stroke="#111827" strokeWidth="4.2" strokeLinecap="round" />
+                        <ellipse cx="17" cy="44" rx="4" ry="2.2" fill="#f8fafc" />
+                      </g>
+                      <g className="runner-leg-front-g">
+                        <line x1="17" y1="30" x2="17" y2="42" stroke="#111827" strokeWidth="4.2" strokeLinecap="round" />
+                        <ellipse cx="17" cy="44" rx="4" ry="2.2" fill="#f8fafc" />
+                      </g>
+                      <line className="runner-torso" x1="20" y1="14" x2="17" y2="30" stroke="#dc2626" strokeWidth="7" strokeLinecap="round" />
+                      <g className="runner-arm-back-g">
+                        <line x1="19" y1="17" x2="19" y2="27" stroke="#b91c1c" strokeWidth="3.2" strokeLinecap="round" />
+                      </g>
+                      <g className="runner-arm-front-g">
+                        <line x1="19" y1="17" x2="19" y2="27" stroke="#dc2626" strokeWidth="3.2" strokeLinecap="round" />
+                      </g>
+                      <circle className="runner-head" cx="20" cy="9" r="5" fill="#f3c9a4" />
+                    </svg>
+                  </div>
+                </div>
+                <svg className="spin-flag spin-flag-finish" viewBox="0 0 20 26" width="18" height="24">
+                  <line x1="2" y1="2" x2="2" y2="25" stroke="#cbd5e1" strokeWidth="1.6" />
+                  <clipPath id="spinFinishFlagClip"><path d="M2 2 L17 6 L2 11 Z" /></clipPath>
+                  <g clipPath="url(#spinFinishFlagClip)">
+                    <rect x="2" y="2" width="15" height="9" fill="#f8fafc" />
+                    <rect x="2" y="2" width="3.75" height="3" fill="#111827" />
+                    <rect x="9.5" y="2" width="3.75" height="3" fill="#111827" />
+                    <rect x="5.75" y="5" width="3.75" height="3" fill="#111827" />
+                    <rect x="13.25" y="5" width="3.75" height="3" fill="#111827" />
+                    <rect x="2" y="8" width="3.75" height="3" fill="#111827" />
+                    <rect x="9.5" y="8" width="3.75" height="3" fill="#111827" />
+                  </g>
+                </svg>
+              </div>
+              <div className="spin-progress-bar-track">
+                <div
+                  className="spin-progress-bar-fill"
+                  style={{ width: `${Math.min(100, Math.max(0, countdownProgress * 100))}%` }}
+                />
+              </div>
+            </div>
+          )}
           {isPrizeDrawn || isAllComplete ? (
             <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', flexDirection: 'column', width: '100%' }}>
               {absentIndexes.size > 0 && !spinning && (
@@ -1008,25 +1062,6 @@ const SpinScreen = () => {
           )}
         </div>
       </div>
-
-      {/* Countdown Ring — Fixed Bottom Right */}
-      {showCountdown && (
-        <div className="countdown-corner">
-          <div className="countdown-ring-large">
-            <svg width="72" height="72" viewBox="0 0 72 72">
-              <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
-              <circle
-                cx="36" cy="36" r="30" fill="none" stroke="#fbbf24" strokeWidth="4"
-                strokeDasharray={188.5}
-                strokeDashoffset={188.5 * (1 - countdownProgress)}
-                strokeLinecap="round"
-                style={{ transform: 'rotate(-90deg)', transformOrigin: 'center' }}
-              />
-            </svg>
-            <span className="countdown-percent">{Math.round(countdownProgress * 100)}%</span>
-          </div>
-        </div>
-      )}
 
       {/* Intro Showcase Popup (Transparent PNG & 3D Floating Reveal) */}
       {showIntro && activePrize && (

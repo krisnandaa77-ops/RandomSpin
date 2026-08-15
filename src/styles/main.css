@@ -410,7 +410,7 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   text-shadow: 0 0 12px rgba(251,191,36,0.35);
   opacity: 0.95;
 }
-.spin-controls { flex-shrink:0; text-align:center; padding-top:24px; display:flex; justify-content:center; position:relative; z-index:50; }
+.spin-controls { flex-shrink:0; text-align:center; padding-top:24px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; position:relative; z-index:50; }
 .btn-spin-action { font-family:'FuturaCyrillicDemi',sans-serif; font-size:1.5rem; padding:16px 48px; border-radius:50px; text-transform:uppercase; letter-spacing:2px; font-weight:800; transition:all 0.2s; position:relative; z-index:50; cursor:pointer; }
 .btn-start { background:linear-gradient(to right,#10b981,#059669); color:white; border:none; box-shadow:0 0 20px rgba(16,185,129,0.5); animation: pulseStart 2s infinite; }
 .btn-start:hover { transform:scale(1.05); box-shadow:0 0 30px rgba(16,185,129,0.8); animation: none; }
@@ -560,23 +560,65 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   .session-tab { padding:8px 16px; font-size:0.8rem; }
 }
 
-/* ===== COUNTDOWN CORNER (Fixed Bottom Right) ===== */
-.countdown-corner {
-  position:fixed; bottom:32px; right:32px; z-index:50;
-  animation:countdownFadeIn 0.4s ease both;
+/* ===== RACE PROGRESS FOOTER (runner: start flag -> finish flag + progress bar) =====
+   Rendered in normal flow inside .spin-controls (not position:fixed) so it
+   naturally stacks above the Berhenti button and never overlaps it, and
+   never needs special-casing for the scaled portrait stage. */
+.spin-progress-footer {
+  width: min(420px, 92%);
+  padding: 12px 18px 10px;
+  background: rgba(15,23,42,0.7);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  animation: spinProgressFadeIn 0.4s ease both;
 }
-.countdown-ring-large {
-  position:relative; width:72px; height:72px;
-  display:flex; align-items:center; justify-content:center;
-  background:rgba(15,23,42,0.7); border-radius:50%;
-  backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.1);
-  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+@keyframes spinProgressFadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.spin-progress-track { position:relative; display:flex; align-items:center; gap:6px; }
+.spin-flag { flex-shrink:0; }
+.spin-progress-line {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  margin: 0 4px;
+  background: repeating-linear-gradient(90deg, rgba(255,255,255,0.35) 0 6px, transparent 6px 12px);
 }
-.countdown-percent {
-  position:absolute; font-size:14px; font-weight:700; color:#fbbf24;
-  font-variant-numeric:tabular-nums; letter-spacing:-0.5px;
+.spin-progress-runner {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -100%);
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
 }
-@keyframes countdownFadeIn { from{opacity:0;transform:scale(0.7) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.runner-figure { display:block; overflow:visible; animation: runnerBounce 0.42s linear infinite; }
+.runner-leg-front-g, .runner-leg-back-g { transform-box: view-box; transform-origin: 17px 30px; }
+.runner-arm-front-g, .runner-arm-back-g { transform-box: view-box; transform-origin: 19px 17px; }
+.runner-leg-front-g { animation: runnerLegFront 0.42s linear infinite; }
+.runner-leg-back-g  { animation: runnerLegBack 0.42s linear infinite; }
+.runner-arm-front-g { animation: runnerArmFront 0.42s linear infinite; }
+.runner-arm-back-g  { animation: runnerArmBack 0.42s linear infinite; }
+@keyframes runnerLegFront { 0%,100% { transform:rotate(30deg); } 50% { transform:rotate(-32deg); } }
+@keyframes runnerLegBack  { 0%,100% { transform:rotate(-32deg); } 50% { transform:rotate(30deg); } }
+@keyframes runnerArmFront { 0%,100% { transform:rotate(-30deg); } 50% { transform:rotate(30deg); } }
+@keyframes runnerArmBack  { 0%,100% { transform:rotate(30deg); } 50% { transform:rotate(-30deg); } }
+@keyframes runnerBounce   { 0%,100% { transform:translateY(0); } 25% { transform:translateY(-2px); } 50% { transform:translateY(0); } 75% { transform:translateY(-2px); } }
+
+.spin-progress-bar-track {
+  margin-top: 9px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  overflow: hidden;
+}
+.spin-progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ef4444, #f59e0b);
+  box-shadow: 0 0 10px rgba(245,158,11,0.5);
+}
 
 /* ===== SLOT SLOWDOWN PULSE ===== */
 .winner-slot.spinning { animation:slotPulse 0.5s ease-in-out infinite; }
@@ -1043,13 +1085,10 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   margin-top: 8px;
 }
 
-/* Countdown Corner — anchor to the scaled portrait stage box (.spin-container
-   is position:relative) instead of position:fixed, which anchors to the real
-   browser viewport and lets it drift outside the letterboxed portrait frame. */
-.spin-container-portrait-locked .countdown-corner {
-  position: absolute !important;
-  bottom: 24px !important;
-  right: 24px !important;
+/* Race Progress Footer — sized down a touch for the compact portrait stage */
+.spin-container-portrait-locked .spin-progress-footer {
+  width: 100% !important;
+  padding: 8px 14px 7px !important;
 }
 
 /* Complete Message */
