@@ -385,15 +385,31 @@ tr:hover td { background:rgba(255,255,255,0.02); }
   box-shadow:0 0 40px rgba(99,102,241,0.5), inset 0 2px 10px rgba(255, 255, 255, 0.2); 
   animation: fastPulse 0.2s infinite;
 }
-.winner-slot.winner { 
-  background:rgba(16,185,129,0.2); 
-  border-color:rgba(16,185,129,0.7); 
-  box-shadow:0 0 50px rgba(16,185,129,0.4), inset 0 2px 10px rgba(255, 255, 255, 0.3); 
-  animation:pulse-win 2s cubic-bezier(0.25,1,0.5,1) infinite; 
-  color: #10b981;
-  text-shadow: 0 0 20px rgba(16,185,129,0.5);
+.winner-slot.winner {
+  background: linear-gradient(160deg, rgba(120,92,24,0.35), rgba(35,26,10,0.55));
+  border: 1px solid rgba(251,191,36,0.65);
+  box-shadow: 0 0 45px rgba(251,191,36,0.3), inset 0 2px 12px rgba(255,241,199,0.2), inset 0 0 0 1px rgba(251,191,36,0.25);
+  animation: pulse-win 2.4s cubic-bezier(0.25,1,0.5,1) infinite;
+  color: #fde68a;
+  text-shadow: 0 0 18px rgba(251,191,36,0.4);
 }
-@keyframes pulse-win { 0%{transform:scale(1)} 50%{transform:scale(1.03); box-shadow:0 0 60px rgba(16,185,129,0.6), inset 0 2px 10px rgba(255, 255, 255, 0.4);} 100%{transform:scale(1)} }
+@keyframes pulse-win { 0%{transform:scale(1)} 50%{transform:scale(1.03); box-shadow:0 0 60px rgba(251,191,36,0.5), inset 0 2px 14px rgba(255,241,199,0.3);} 100%{transform:scale(1)} }
+/* Elegant metallic-gold text treatment for the winner's BIB number/name */
+.winner-slot.winner .slot-bib-number,
+.winner-slot.winner .slot-inner-text {
+  background: linear-gradient(135deg, #fff6d8 0%, #fbbf24 45%, #d97706 80%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 12px rgba(251,191,36,0.5));
+}
+.winner-slot.winner .slot-bib-name {
+  color: #fde9b0;
+  text-shadow: 0 0 12px rgba(251,191,36,0.35);
+  opacity: 0.95;
+}
 .spin-controls { flex-shrink:0; text-align:center; padding-top:24px; display:flex; justify-content:center; position:relative; z-index:50; }
 .btn-spin-action { font-family:'FuturaCyrillicDemi',sans-serif; font-size:1.5rem; padding:16px 48px; border-radius:50px; text-transform:uppercase; letter-spacing:2px; font-weight:800; transition:all 0.2s; position:relative; z-index:50; cursor:pointer; }
 .btn-start { background:linear-gradient(to right,#10b981,#059669); color:white; border:none; box-shadow:0 0 20px rgba(16,185,129,0.5); animation: pulseStart 2s infinite; }
