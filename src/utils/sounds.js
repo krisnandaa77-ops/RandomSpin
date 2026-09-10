@@ -269,3 +269,73 @@ export function playWinnerSound() {
   cheerGain.connect(ctx.destination);
   cheer.start(cheerStart);
 }
+
+// ===== SUSPICIOUS / DRAMATIC VINE BOOM SOUND =====
+export function playSuspiciousSound() {
+  try {
+    const ctx = getCtx();
+    const t = ctx.currentTime;
+
+    // 1. Deep Sub-Bass Punch (Vine Boom drop)
+    const subOsc = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(145, t);
+    subOsc.frequency.exponentialRampToValueAtTime(32, t + 0.35);
+
+    subGain.gain.setValueAtTime(0.7, t);
+    subGain.gain.exponentialRampToValueAtTime(0.001, t + 0.85);
+
+    subOsc.connect(subGain);
+    subGain.connect(ctx.destination);
+    subOsc.start(t);
+    subOsc.stop(t + 0.9);
+
+    // 2. Suspicious Dissonant Stinger Chords (Tense / Mystery)
+    const chordFreqs = [220, 233.08, 440, 466.16]; // Dissonant minor 2nd clash (A & A#)
+    chordFreqs.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t);
+
+      // Lowpass filter to give that dark, muffled suspicious vibe
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(600, t);
+      filter.frequency.linearRampToValueAtTime(300, t + 1.2);
+
+      gain.gain.setValueAtTime(0.12 / (idx + 1), t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 1.25);
+    });
+
+    // 3. Impact Transient Noise
+    const noiseLen = Math.floor(ctx.sampleRate * 0.05);
+    const noiseBuf = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
+    const noiseData = noiseBuf.getChannelData(0);
+    for (let i = 0; i < noiseLen; i++) {
+      noiseData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / noiseLen, 3);
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuf;
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.value = 400;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.4, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    noise.start(t);
+  } catch (e) {
+    console.warn('Audio playback error:', e);
+  }
+}
