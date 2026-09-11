@@ -1,4 +1,4 @@
-/* ===== APP LOCK GATE & MULTI-STAGE ALERT STYLES ===== */
+/* ===== APP LOCK GATE & 404 SCREEN STYLES ===== */
 
 .app-lock-root {
   position: relative;
@@ -98,15 +98,8 @@
   justify-content: center;
   color: #a5b4fc;
   box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
-  cursor: pointer;
   user-select: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.app-lock-icon-badge:hover {
-  transform: scale(1.05);
-  border-color: rgba(168, 85, 247, 0.6);
-  color: #c7d2fe;
 }
 
 .app-lock-icon-badge.success {
@@ -227,367 +220,65 @@
   letter-spacing: 0.5px;
 }
 
-.app-lock-hint {
-  font-size: 12px;
-  color: #64748b;
-  margin-top: 18px;
-  margin-bottom: 0;
-}
-
 /* =========================================================
-   MODAL / ALERT OVERLAYS
+   STAGE 2: AUTHENTIC CLASSIC SERVER 404 NOT FOUND
    ========================================================= */
 
-.app-lock-overlay {
+.server-404-screen {
   position: fixed;
   inset: 0;
-  z-index: 999999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(2, 6, 23, 0.78);
-  backdrop-filter: blur(14px);
-  padding: 20px;
-  animation: overlayFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Alert 1: Image Only Modal (with Close button [X]) */
-.lock-image-modal {
-  position: relative;
-  width: 500px;
-  max-width: 92vw;
-  background: #0f172a;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.98));
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
-  border-radius: 24px;
-  padding: 50px 22px 22px;
-  box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.85),
-              0 0 50px rgba(245, 158, 11, 0.25);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: alertModalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.lock-image-preview {
-  width: 100%;
-  max-height: 65vh;
-  object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  display: block;
-}
-
-/* Alert 2 Modal (with Close button) */
-.lock-alert-modal {
-  position: relative;
-  width: 520px;
-  max-width: 92vw;
-  background: #0f172a;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  padding: 38px 34px 32px;
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8),
-              0 0 40px rgba(99, 102, 241, 0.2);
-  color: #f8fafc;
-  text-align: center;
-  animation: alertModalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes alertModalPop {
-  0% {
-    opacity: 0;
-    transform: scale(0.85) translateY(15px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* Close Button [X] */
-.lock-alert-close-btn {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  color: #cbd5e1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.lock-alert-close-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #ef4444;
-  transform: rotate(90deg);
-}
-
-.lock-alert-icon-wrap {
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  margin: 0 auto 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.2));
-  border: 1px solid rgba(99, 102, 241, 0.4);
-  color: #818cf8;
-}
-
-.lock-alert-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: #a5b4fc;
-  margin-bottom: 12px;
-}
-
-.lock-alert-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0 0 10px;
-  color: #ffffff;
-}
-
-.lock-alert-message {
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1.45;
-  color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  margin: 0 0 28px;
-  padding: 20px 24px;
-  background: rgba(99, 102, 241, 0.16);
-  border: 1.5px solid rgba(129, 140, 248, 0.35);
-  border-radius: 16px;
-  text-shadow: 0 0 24px rgba(99, 102, 241, 0.55);
-}
-
-.lock-alert-action-btn {
-  padding: 14px 36px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 12px;
-  color: #f1f5f9;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease;
-}
-
-.lock-alert-action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: translateY(-1px);
-}
-
-/* =========================================================
-   ALERT 2: THE FATAL LOCK / UNCLOSABLE BLOCKER
-   ========================================================= */
-
-.lock-fatal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999999; /* Highest priority on page */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(2, 6, 23, 0.94);
-  backdrop-filter: blur(28px) saturate(180%);
-  padding: 24px;
-  user-select: none;
-  animation: fatalFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  pointer-events: all !important;
-}
-
-@keyframes fatalFadeIn {
-  from {
-    opacity: 0;
-    backdrop-filter: blur(0px);
-  }
-  to {
-    opacity: 1;
-    backdrop-filter: blur(28px) saturate(180%);
-  }
-}
-
-.lock-fatal-modal {
-  position: relative;
-  width: 620px;
-  max-width: 92vw;
-  background: #090d16;
-  background: linear-gradient(160deg, #131826 0%, #080b12 100%);
-  border: 2px solid rgba(239, 68, 68, 0.4);
-  border-radius: 28px;
-  padding: 48px 36px;
-  box-shadow: 0 0 60px rgba(239, 68, 68, 0.25),
-              0 30px 80px -15px rgba(0, 0, 0, 0.95),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #f8fafc;
-  text-align: center;
-  animation: fatalCardDrop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, fatalGlowPulse 4s infinite alternate;
-}
-
-@keyframes fatalCardDrop {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) translateY(-40px);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.03) translateY(6px);
-  }
-  100% {
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes fatalGlowPulse {
-  0% {
-    box-shadow: 0 0 50px rgba(239, 68, 68, 0.2), 0 30px 80px rgba(0, 0, 0, 0.9);
-    border-color: rgba(239, 68, 68, 0.4);
-  }
-  100% {
-    box-shadow: 0 0 80px rgba(239, 68, 68, 0.4), 0 30px 80px rgba(0, 0, 0, 0.9);
-    border-color: rgba(239, 68, 68, 0.7);
-  }
-}
-
-.lock-fatal-icon-wrap {
-  position: relative;
-  width: 88px;
-  height: 88px;
-  border-radius: 28px;
-  margin: 0 auto 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(153, 27, 27, 0.15) 100%);
-  border: 2px solid rgba(239, 68, 68, 0.5);
-  color: #f87171;
-  box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
-  animation: pulseIcon 2s infinite ease-in-out;
-}
-
-@keyframes pulseIcon {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); box-shadow: 0 0 45px rgba(239, 68, 68, 0.6); }
-}
-
-.lock-fatal-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 16px;
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  border-radius: 30px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #fca5a5;
-  margin-bottom: 16px;
-}
-
-.lock-fatal-badge-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #ef4444;
-  animation: blinkDot 1s infinite alternate;
-}
-
-@keyframes blinkDot {
-  0% { opacity: 0.3; }
-  100% { opacity: 1; }
-}
-
-.lock-fatal-title {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: #ffffff;
-  margin: 0 0 16px;
-}
-
-.lock-fatal-image-wrap {
-  width: 175px;
-  height: 175px;
-  margin: 0 auto 20px;
-  border-radius: 20px;
+  z-index: 9999999;
+  background-color: #ffffff;
+  color: #000000;
   overflow: hidden;
-  border: 2.5px solid rgba(239, 68, 68, 0.6);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8),
-              0 0 35px rgba(239, 68, 68, 0.4);
-  background: #000;
-  animation: pulseIcon 2.5s infinite ease-in-out;
-}
-
-.lock-fatal-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.lock-fatal-message {
-  font-size: 26px;
-  font-weight: 900;
-  line-height: 1.5;
-  color: #fee2e2;
-  text-transform: uppercase;
-  letter-spacing: 1.4px;
-  margin: 0 0 32px;
-  padding: 24px 28px;
-  background: rgba(239, 68, 68, 0.14);
-  border: 2px dashed rgba(239, 68, 68, 0.6);
-  border-radius: 20px;
-  word-break: break-word;
-  text-shadow: 0 0 30px rgba(239, 68, 68, 0.7);
-}
-
-.lock-fatal-footer {
+  padding: 50px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: #64748b;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 20px;
+  justify-content: flex-start;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-.lock-fatal-lock-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #94a3b8;
-  font-weight: 500;
+.server-404-container {
+  width: 100%;
+  max-width: 780px;
+  text-align: center;
+}
+
+.server-404-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.5px;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default; /* Tidak terlihat seperti link atau tombol */
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 6px;
+  transition: opacity 0.1s ease;
+}
+
+.server-404-title:active {
+  opacity: 0.85;
+}
+
+.server-404-hr {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid #d1d5db;
+  margin: 0 0 14px 0;
+}
+
+.server-404-server {
+  font-size: 14px;
+  color: #374151;
+  font-style: italic;
+  font-family: monospace, sans-serif;
+  letter-spacing: 0.2px;
 }
 
 /* Secret bypass indicator (subtle toast) */

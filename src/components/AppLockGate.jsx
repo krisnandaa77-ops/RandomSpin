@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Lock, ShieldAlert, X, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
-import suspiciousCatImg from '../assets/suspicious-cat.jpg';
-import speedMemeImg from '../assets/speed-meme.jpg';
-import { playSuspiciousSound } from '../utils/sounds';
+import { Lock, ArrowRight, ShieldCheck } from 'lucide-react';
 import './AppLockGate.css';
 
 const DEFAULT_PIN = '1234';
@@ -23,16 +20,21 @@ const AppLockGate = ({ children }) => {
     if (isBypassed()) return 'UNLOCKED';
     try {
       const saved = sessionStorage.getItem(STORAGE_STAGE_KEY);
-      if (saved === 'ALERT_FATAL') return 'ALERT_FATAL';
-      if (saved === 'ALERT_TEXT') return 'ALERT_TEXT';
-      if (saved === 'ALERT_IMAGE') return 'ALERT_IMAGE';
+      if (
+        saved === 'ERROR_404' ||
+        saved === 'ALERT_FATAL' ||
+        saved === 'ALERT_TEXT' ||
+        saved === 'ALERT_IMAGE'
+      ) {
+        return 'ERROR_404';
+      }
     } catch {
       // fallback
     }
     return 'PIN';
   };
 
-  // Stages: 'PIN' | 'ALERT_IMAGE' (Alert 1) | 'ALERT_TEXT' (Alert 2) | 'ALERT_FATAL' (Alert 3) | 'UNLOCKED'
+  // Stages: 'PIN' | 'ERROR_404' | 'UNLOCKED'
   const [stage, setStage] = useState(getSavedStage);
   const [pin, setPin] = useState(['', '', '', '']);
   const [error, setError] = useState('');
@@ -40,15 +42,8 @@ const AppLockGate = ({ children }) => {
   const [shake, setShake] = useState(false);
   const [bypassToast, setBypassToast] = useState('');
   const inputRefs = useRef([]);
-  const secretClickCountRef = useRef(0);
-  const secretTimerRef = useRef(null);
-
-  // Play suspicious sound when entering ALERT_IMAGE
-  useEffect(() => {
-    if (stage === 'ALERT_IMAGE') {
-      playSuspiciousSound();
-    }
-  }, [stage]);
+  const click404CountRef = useRef(0);
+  const click404TimerRef = useRef(null);
 
   // Get configured PIN or default
   const getExpectedPin = () => {
@@ -60,15 +55,11 @@ const AppLockGate = ({ children }) => {
     }
   };
 
-  // Keyboard shortcut for developer bypass: Ctrl + Alt + Shift + U to unlock, Ctrl + Alt + Shift + L to re-lock
+  // Global keyboard shortcuts:
+  // Ctrl + Alt + Shift + U -> Unlock
+  // Ctrl + Alt + Shift + L -> Re-lock
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
-      // Block Escape key when on ALERT_FATAL to prevent any modal escaping
-      if (stage === 'ALERT_FATAL' && e.key === 'Escape') {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
       if (e.ctrlKey && e.altKey && e.shiftKey) {
         if (e.key === 'U' || e.key === 'u') {
           e.preventDefault();
@@ -89,7 +80,7 @@ const AppLockGate = ({ children }) => {
 
     window.addEventListener('keydown', handleGlobalKeyDown, true);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown, true);
-  }, [stage]);
+  }, []);
 
   const showToast = (msg) => {
     setBypassToast(msg);
@@ -137,8 +128,8 @@ const AppLockGate = ({ children }) => {
       setIsSuccess(true);
       setError('');
       setTimeout(() => {
-        setStage('ALERT_IMAGE');
-        sessionStorage.setItem(STORAGE_STAGE_KEY, 'ALERT_IMAGE');
+        setStage('ERROR_404');
+        sessionStorage.setItem(STORAGE_STAGE_KEY, 'ERROR_404');
       }, 700);
     } else {
       setError('PIN salah, silakan coba lagi');
@@ -151,35 +142,27 @@ const AppLockGate = ({ children }) => {
     }
   };
 
-  // Close Alert 1 (Image) -> Advances to Alert 2 (Text)
-  const handleCloseAlertImage = () => {
-    setStage('ALERT_TEXT');
-    sessionStorage.setItem(STORAGE_STAGE_KEY, 'ALERT_TEXT');
-  };
+  // Secret trigger: Klik "404" sebanyak 20 kali untuk membuka
+  const handle404Click = () => {
+    click404CountRef.current += 1;
 
-  // Close Alert 2 (Text) -> Advances to Alert 3 (Fatal Lockout)
-  const handleCloseAlertText = () => {
-    setStage('ALERT_FATAL');
-    sessionStorage.setItem(STORAGE_STAGE_KEY, 'ALERT_FATAL');
-  };
+    if (click404TimerRef.current) {
+      clearTimeout(click404TimerRef.current);
+    }
 
-  // Secret click trigger (clicking lock icon 5 times in 2.5s)
-  const handleSecretIconClick = () => {
-    secretClickCountRef.current += 1;
-    if (secretTimerRef.current) clearTimeout(secretTimerRef.current);
-
-    if (secretClickCountRef.current >= 5) {
-      secretClickCountRef.current = 0;
+    if (click404CountRef.current >= 20) {
+      click404CountRef.current = 0;
       localStorage.setItem(STORAGE_BYPASS_KEY, 'true');
       sessionStorage.removeItem(STORAGE_STAGE_KEY);
       setStage('UNLOCKED');
-      showToast('Developer Bypass Activated');
+      showToast('Akses Berhasil Dibuka (20x Klik Terverifikasi)');
       return;
     }
 
-    secretTimerRef.current = setTimeout(() => {
-      secretClickCountRef.current = 0;
-    }, 2500);
+    // Reset hitungan jika jeda lebih dari 4 detik
+    click404TimerRef.current = setTimeout(() => {
+      click404CountRef.current = 0;
+    }, 4000);
   };
 
   return (
@@ -214,7 +197,6 @@ const AppLockGate = ({ children }) => {
           <div className={`app-lock-card ${isSuccess ? 'lock-success' : ''} ${shake ? 'lock-shake' : ''}`}>
             <div
               className={`app-lock-icon-badge ${isSuccess ? 'success' : ''}`}
-              onClick={handleSecretIconClick}
               title="Aplikasi Terkunci"
             >
               {isSuccess ? <ShieldCheck size={40} /> : <Lock size={40} />}
@@ -257,115 +239,25 @@ const AppLockGate = ({ children }) => {
         </div>
       )}
 
-      {/* RENDER THE APP IN THE BACKGROUND (Accessible once past PIN, but blocked by alerts) */}
-      {stage !== 'PIN' && children}
-
-      {/* ALERT 1: IMAGE ONLY MODAL (WITH [X] AND SUSPICIOUS SOUND) */}
-      {stage === 'ALERT_IMAGE' && (
-        <div className="app-lock-overlay" onClick={handleCloseAlertImage}>
-          <div className="lock-image-modal" onClick={(e) => e.stopPropagation()}>
-            {/* Close Button 'X' */}
-            <button
-              className="lock-alert-close-btn"
-              onClick={handleCloseAlertImage}
-              aria-label="Tutup"
-              title="Tutup"
+      {/* STAGE 2: PURE CLASSIC SERVER 404 NOT FOUND (20-CLICK SECRET UNLOCK) */}
+      {stage === 'ERROR_404' && (
+        <div className="server-404-screen">
+          <div className="server-404-container">
+            <h1
+              className="server-404-title"
+              onClick={handle404Click}
+              title=""
             >
-              <X size={20} />
-            </button>
-
-            <img
-              src={suspiciousCatImg}
-              alt="Suspicious Cat Meme"
-              className="lock-image-preview"
-            />
+              404 Not Found
+            </h1>
+            <hr className="server-404-hr" />
+            <div className="server-404-server">nginx/1.24.0 (Ubuntu)</div>
           </div>
         </div>
       )}
 
-      {/* ALERT 2: TEXT GREETING MODAL (DISMISSIBLE WITH 'X') */}
-      {stage === 'ALERT_TEXT' && (
-        <div className="app-lock-overlay" onClick={handleCloseAlertText}>
-          <div className="lock-alert-modal" onClick={(e) => e.stopPropagation()}>
-            {/* Close Button 'X' */}
-            <button
-              className="lock-alert-close-btn"
-              onClick={handleCloseAlertText}
-              aria-label="Tutup"
-              title="Tutup"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="lock-alert-icon-wrap">
-              <Sparkles size={32} />
-            </div>
-
-            <span className="lock-alert-badge">Pemberitahuan</span>
-            <h2 className="lock-alert-title">HALO!</h2>
-            <div className="lock-alert-message">
-              SEMANGAT YA BEKERJANYA GUYSS.
-            </div>
-
-            <button className="lock-alert-action-btn" onClick={handleCloseAlertText}>
-              OKE
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ALERT 3: FATAL LOCKOUT (PERMANENT BLOCKER, NO 'X', LOCKS ENTIRE WEB) */}
-      {stage === 'ALERT_FATAL' && (
-        <div
-          className="lock-fatal-overlay"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        >
-          <div
-            className="lock-fatal-modal"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            {/* Notice: No X / Close button provided! */}
-            <div
-              className="lock-fatal-icon-wrap"
-              onClick={handleSecretIconClick}
-              title="System Alert"
-            >
-              <ShieldAlert size={46} />
-            </div>
-
-            <div className="lock-fatal-badge">
-              <span className="lock-fatal-badge-dot"></span>
-              SISTEM DIBATASI
-            </div>
-
-            <h2 className="lock-fatal-title">AKSES DINONAKTIFKAN</h2>
-
-            <div className="lock-fatal-image-wrap">
-              <img
-                src={speedMemeImg}
-                alt="Developer Speed Meme"
-                className="lock-fatal-image"
-              />
-            </div>
-
-            <div className="lock-fatal-message">
-              "KATA GW SIH LU MENDING REKRUT DEVELOPER YANG BISA BUAT KAYAK GINI"
-            </div>
-
-            <div className="lock-fatal-footer">
-              <div className="lock-fatal-lock-status">
-                <Lock size={14} /> SELURUH INTERAKSI HALAMAN TELAH DIKUNCI
-              </div>
-              <span>Hubungi administrator untuk pemulihan akses sistem</span>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* STAGE 3: UNLOCKED - RENDER APPLICATION */}
+      {stage === 'UNLOCKED' && children}
     </div>
   );
 };
